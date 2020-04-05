@@ -5,4 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r'', views.ResidenceViewSet, basename='residences')
-urlpatterns = router.urls
+
+urlpatterns = router.urls + [
+    path('search', views.SearchReservationView.as_view()),
+]
