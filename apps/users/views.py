@@ -31,6 +31,7 @@ class RegisterUserView(views.APIView):
             username=input_serializer.data['username'],
             email=input_serializer.data['email']
         )
+
         u.set_password(input_serializer.data['password'])
         u.save()
 
@@ -46,15 +47,20 @@ class LoginUserView(views.APIView):
         if User.objects.filter(username=input_serializer.data['username']).exists():
             u = User.objects.get(username=input_serializer.data['username'])
             if u.check_password(input_serializer.data['password']):
-                token = Token.objects.create(user=u)
+                if Token.objects.filter(user=u).exists():
+                    token = Token.objects.get(user=u)
+                else:
+                    token = Token.objects.create(user=u)
                 print(token.key)
                 return response.Response({'token': token.key})
 
         return response.Response({'error': 'Bad Credentials'}, status=400)
 
 class LogoutUserView(views.APIView):
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request):
         Token.objects.filter(key=request.auth).delete()
         return response.Response("ok")
