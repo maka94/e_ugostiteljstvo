@@ -14,10 +14,3 @@ class Residence(models.Model):
     deleted = models.BooleanField(default=False)
     description = models.CharField(max_length=255)
 
-class Reservation(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
-    residence = models.ForeignKey(Residence, on_delete=models.DO_NOTHING, null=False)
-    date_from = models.DateField()
-    date_to = models.DateField()
-    cancelled = models.BooleanField(default=False)
-    price = models.DecimalField(max_digits=5, decimal_places=2)

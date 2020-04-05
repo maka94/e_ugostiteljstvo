@@ -7,5 +7,5 @@ router = DefaultRouter()
 router.register(r'', views.ResidenceViewSet, basename='residences')
 
 urlpatterns = router.urls + [
-    path('search', views.SearchReservationView.as_view()),
+    path('search', views.SearchReservationView.as_view())
 ]

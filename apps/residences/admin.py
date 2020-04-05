@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.residences.models import Residence, Reservation
+from apps.residences.models import Residence
 
 admin.site.register(Residence)
-admin.site.register(Reservation)
+
