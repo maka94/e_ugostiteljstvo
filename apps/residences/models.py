@@ -9,7 +9,7 @@ class Residence(models.Model):
     address = models.CharField(max_length=200)
     town = models.CharField(max_length=200)
     country = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=15, decimal_places=2)
     bed_number = models.IntegerField(default=1)
     deleted = models.BooleanField(default=False)
     description = models.CharField(max_length=255)

@@ -1,16 +1,32 @@
-from rest_framework import  viewsets
+from rest_framework import views, response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from apps.reservations.serializers import ReservationSerializer
+from apps.reservations.serializers import CreateReservationSerializer
+from apps.reservations.models import Reservation
 
-class ReservationView(viewsets.ModelViewSet):
+class ReservationView(views.APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = ReservationSerializer
 
-    def get_queryset(self):
-        return ReservationView.objects.filter(user=self.request.user, cancelled=False)
-
-    def perform_destroy(self, instance):
-        instance.cancelled = True
-        instance.save()
+    def post(self, request):
+        input_serializer = CreateReservationSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+        date_to = input_serializer.validated_data['date_to']
+        date_from = input_serializer.validated_data['date_from']
+        user = request.user
+        residence = input_serializer.validated_data['residence']
+        days_td = date_to - date_from
+        days = days_td.days
+        price_per_night = residence.price
+        print(days*price_per_night)
+        Reservation.objects.create(
+            user=user,
+            residence=residence,
+            date_from=date_from,
+            date_to=date_to,
+            price=days*price_per_night
+        )
+        print(type(date_to))
+        print(type(date_from))
+        print(input_serializer.validated_data)
+        return response.Response("ok")

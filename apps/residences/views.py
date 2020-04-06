@@ -3,7 +3,7 @@ from rest_framework import viewsets, views, response, exceptions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from apps.residences.serializers import ResidenceSerializer
-from apps.reservations.serializers import ReservationSerializer
+from apps.reservations.serializers import CreateReservationSerializer
 from django.contrib.auth import get_user_model
 from apps.residences.models import Residence
 from datetime import datetime

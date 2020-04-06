@@ -10,4 +10,4 @@ class Reservation(models.Model):
     date_from = models.DateField()
     date_to = models.DateField()
     cancelled = models.BooleanField(default=False)
-    price = models.DecimalField(max_digits=5, decimal_places=2)
+    price = models.DecimalField(max_digits=15, decimal_places=2)
