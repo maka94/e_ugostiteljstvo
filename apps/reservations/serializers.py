@@ -6,3 +6,6 @@ class CreateReservationSerializer(serializers.Serializer):
     date_from = serializers.DateField()
     date_to = serializers.DateField()
     residence = serializers.PrimaryKeyRelatedField(queryset=Residence.objects.all())
+
+
+
