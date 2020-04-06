@@ -3,10 +3,11 @@ from rest_framework import viewsets, views, response, exceptions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from apps.residences.serializers import ResidenceSerializer
-from apps.reservations.serializers import CreateReservationSerializer
+from apps.reservations.models import Reservation
 from django.contrib.auth import get_user_model
 from apps.residences.models import Residence
 from datetime import datetime
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -27,7 +28,7 @@ class ResidenceViewSet(viewsets.ModelViewSet):
 class SearchReservationView(views.APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
-    DATE_FORMAT = "%d-%m-%Y"
+    DATE_FORMAT = "%Y-%m-%d"
 
     def _format_date(self, date_str, param):
         try:
@@ -91,7 +92,14 @@ class SearchReservationView(views.APIView):
             queryset = queryset.filter(bed_number=bed_num)
 
         # filter by dates
-        pass
+        date_to_in_range = Q(date_to__range=[date_from, date_to])
+        date_from_in_range = Q(date_from__range=[date_from, date_to])
+        dates_in_range = date_to_in_range | date_from_in_range
+        surrounding = Q(date_from__lte=date_from, date_to__gte=date_to)
+
+        reservations = Reservation.objects.filter(dates_in_range | surrounding)
+        residence_ids = reservations.values_list('residence', flat=True).distinct()
+        queryset = queryset.exclude(pk__in=residence_ids)
 
         # Return what's left
         serializer = ResidenceSerializer(queryset, many=True)
