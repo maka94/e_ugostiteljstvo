@@ -25,7 +25,7 @@ class ResidenceViewSet(viewsets.ModelViewSet):
 
 
 
-class SearchReservationView(views.APIView):
+class SearchResidenceView(views.APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
     DATE_FORMAT = "%Y-%m-%d"

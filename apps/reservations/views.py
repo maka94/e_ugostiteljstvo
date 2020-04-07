@@ -1,7 +1,7 @@
 from rest_framework import views, response, exceptions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-from apps.reservations.serializers import CreateReservationSerializer
+from apps.reservations.serializers import CreateReservationSerializer, ReservationSerializer
 from apps.reservations.models import Reservation
 from django.db.models import Q
 
@@ -40,3 +40,10 @@ class ReservationView(views.APIView):
         print(type(date_from))
         print(input_serializer.validated_data)
         return response.Response("ok")
+
+    def get(self, request):
+        queryset = Reservation.objects.filter(user=self.request.user, cancelled=False)
+        serializer = ReservationSerializer(queryset, many=True)
+        return response.Response(serializer.data)
+
+

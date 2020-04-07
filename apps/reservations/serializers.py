@@ -7,5 +7,8 @@ class CreateReservationSerializer(serializers.Serializer):
     date_to = serializers.DateField()
     residence = serializers.PrimaryKeyRelatedField(queryset=Residence.objects.all())
 
-
+class ReservationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reservation
+        fields = ['user', 'residence', 'date_from', 'date_to', 'cancelled', 'price']
 
