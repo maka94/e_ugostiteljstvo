@@ -46,4 +46,16 @@ class ReservationView(views.APIView):
         serializer = ReservationSerializer(queryset, many=True)
         return response.Response(serializer.data)
 
+class CancelReservationView(views.APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
+    def delete(self, request, pk):
+        try:
+            r = Reservation.objects.get(user=request.user, id=pk, cancelled=False)
+            r.cancelled = True
+            r.save()
+        except Reservation.DoesNotExist:
+            raise exceptions.NotFound()
+
+        return response.Response("Reservation is cancelled")
