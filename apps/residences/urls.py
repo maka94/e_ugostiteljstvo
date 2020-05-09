@@ -6,6 +6,8 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r'', views.ResidenceViewSet, basename='residences')
 
+
 urlpatterns = router.urls + [
-    path('search', views.SearchResidenceView.as_view())
+    path('search', views.SearchResidenceView.as_view()),
+    path('all', views.AllResidenceView.as_view())
 ]

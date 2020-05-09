@@ -23,6 +23,13 @@ class ResidenceViewSet(viewsets.ModelViewSet):
         instance.deleted = True
         instance.save()
 
+class AllResidenceView(views.APIView):
+    serializer_class = ResidenceSerializer
+
+    def get(self, request):
+        queryset = Residence.objects.filter(deleted=False)
+        serializer = ResidenceSerializer(queryset, many=True)
+        return response.Response(serializer.data)
 
 
 class SearchResidenceView(views.APIView):
