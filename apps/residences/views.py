@@ -8,6 +8,7 @@ from django.contrib.auth import get_user_model
 from apps.residences.models import Residence
 from datetime import datetime
 from django.db.models import Q
+from decimal import Decimal
 
 User = get_user_model()
 
@@ -49,6 +50,12 @@ class SearchResidenceView(views.APIView):
         except ValueError:
             raise exceptions.ValidationError({param: 'Invalid format'})
 
+    def _convert_to_decimal(self, param_str, param):
+        try:
+            return Decimal(param_str)
+        except ValueError:
+            raise exceptions.ValidationError({param: 'Invalid format'})
+
     def _get_required_param(self, query_params, param):
         try:
             return query_params[param]
@@ -71,7 +78,7 @@ class SearchResidenceView(views.APIView):
         town = self._get_required_param(request.query_params, 'town')
 
         # Filter by country & town
-        queryset = Residence.objects.filter(country__iexact=country.lower(), town__iexact=town.lower())
+        queryset = Residence.objects.filter(country__iexact=country.lower(), town__iexact=town.lower(), deleted=False)
 
         # Filter by not required params
 
@@ -85,12 +92,13 @@ class SearchResidenceView(views.APIView):
 
         price_from_str = request.query_params.get('price_from')
         if price_from_str:
-            price_from = self._convert_to_int(price_from_str, 'price_from')
+            price_from = self._convert_to_decimal(price_from_str, 'price_from')
             queryset = queryset.filter(price__gte=price_from)
+
 
         price_to_str = request.query_params.get('price_to')
         if price_to_str:
-            price_to = self._convert_to_int(price_to_str, 'price_to')
+            price_to = self._convert_to_decimal(price_to_str, 'price_to')
             queryset = queryset.filter(price__lte=price_to)
 
         bed_num_str = request.query_params.get('bed_num')
