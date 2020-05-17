@@ -60,6 +60,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'e_ugostiteljstvo.urls'
 
+MEDIA_ROOT = 'media'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
