@@ -14,3 +14,7 @@ class Residence(models.Model):
     deleted = models.BooleanField(default=False)
     description = models.CharField(max_length=255)
 
+class ResidenceImage(models.Model):
+    residence = models.ForeignKey(Residence, on_delete=models.DO_NOTHING, null=False, related_name='images')
+    image = models.FileField()
+

@@ -59,3 +59,5 @@ class CancelReservationView(views.APIView):
             raise exceptions.NotFound()
 
         return response.Response("Reservation is cancelled")
+
+
