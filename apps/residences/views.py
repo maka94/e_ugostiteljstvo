@@ -1,14 +1,17 @@
 from django.shortcuts import render
+import os
 from rest_framework import viewsets, views, response, exceptions
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from apps.residences.serializers import ResidenceSerializer
 from apps.reservations.models import Reservation
 from django.contrib.auth import get_user_model
-from apps.residences.models import Residence
+from apps.residences.models import Residence, ResidenceImage
 from datetime import datetime
 from django.db.models import Q
 from decimal import Decimal
+from django.conf import settings
+from django.http import FileResponse
 
 User = get_user_model()
 
@@ -19,6 +22,14 @@ class ResidenceViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Residence.objects.filter(owner=self.request.user, deleted=False)
+
+    def list(self, request, *args, **kwargs):
+        response = super(ResidenceViewSet, self).list(request, *args, **kwargs)
+        for residence_dict in response.data:
+            for image in residence_dict['images']:
+                splited = image['image'].split('http://localhost:8000/residences/')
+                image['image'] = splited[1]
+        return response
 
     def perform_destroy(self, instance):
         instance.deleted = True
@@ -119,3 +130,15 @@ class SearchResidenceView(views.APIView):
         # Return what's left
         serializer = ResidenceSerializer(queryset, many=True)
         return response.Response(serializer.data)
+
+
+class ImageDownloadView(views.APIView):
+
+    def get(self, request, file_name, *args, **kwargs):
+
+        try:
+            image = ResidenceImage.objects.get(image=file_name)
+        except ResidenceImage.DoesNotExist:
+            raise exceptions.NotFound
+
+        return FileResponse(image.image.open())
