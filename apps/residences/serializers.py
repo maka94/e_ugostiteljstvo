@@ -22,7 +22,7 @@ class ResidenceSerializer(serializers.ModelSerializer):
 
         return residence
     owner = OwnerSerializer(read_only=True)
-    images = ResidenceImageSerializer(many=True)
+    images = ResidenceImageSerializer(many=True, read_only=True)
     class Meta:
         model = Residence
         fields = ['id','type', 'address', 'town', 'country', 'price', 'bed_number', 'description', 'owner', 'images']
