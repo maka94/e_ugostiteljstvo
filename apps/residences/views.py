@@ -142,3 +142,20 @@ class ImageDownloadView(views.APIView):
             raise exceptions.NotFound
 
         return FileResponse(image.image.open())
+
+class ImageUploadView(views.APIView):
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        residence_id = request.data['residence_id']
+        try:
+            residence = Residence.objects.get(id=residence_id, owner=request.user)
+        except Residence.DoesNotExist:
+            raise exceptions.NotFound
+
+        for image in request.FILES.values():
+           ResidenceImage.objects.create(residence=residence, image=image)
+
+        return response.Response()
