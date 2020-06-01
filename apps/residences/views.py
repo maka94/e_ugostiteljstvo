@@ -45,8 +45,8 @@ class AllResidenceView(views.APIView):
 
 
 class SearchResidenceView(views.APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    #authentication_classes = [TokenAuthentication]
+    #permission_classes = [IsAuthenticated]
     DATE_FORMAT = "%Y-%m-%d"
 
     def _format_date(self, date_str, param):
