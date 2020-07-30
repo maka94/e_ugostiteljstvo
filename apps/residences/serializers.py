@@ -25,5 +25,5 @@ class ResidenceSerializer(serializers.ModelSerializer):
     images = ResidenceImageSerializer(many=True, read_only=True)
     class Meta:
         model = Residence
-        fields = ['id','type', 'address', 'town', 'country', 'price', 'bed_number', 'description', 'owner', 'images']
+        fields = ['id','type', 'address', 'lat', 'lon', 'town', 'country', 'price', 'bed_number', 'description', 'owner', 'images']
 
